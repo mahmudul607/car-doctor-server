@@ -9,9 +9,12 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // Middleware 
 app.use(express.json());
 app.use(cookieParser());
+
+
+
 app.use(cors({
-  origin: ['http://localhost:5173'],
-  credentials: true
+  origin: [ 'https://cars-doctor-e47c4.web.app', 'https://cars-doctor-e47c4.firebaseapp.com'],
+  credentials: true,
 }));
 
 
@@ -84,9 +87,12 @@ async function run() {
 
 
       res
-        .cookie('token', token, {
+      .cookie('token', token, {
           httpOnly: true,
-          secure: false,
+          secure: true,
+          sameSite: 'none',
+          
+         
 
 
         })
