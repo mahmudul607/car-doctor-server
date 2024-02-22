@@ -13,7 +13,7 @@ app.use(cookieParser());
 
 
 app.use(cors({
-  origin: [ 'https://cars-doctor-e47c4.web.app', 'https://cars-doctor-e47c4.firebaseapp.com'],
+  origin: [ 'http://localhost:5173', 'https://cars-doctor-e47c4.web.app', 'https://cars-doctor-e47c4.firebaseapp.com'],
   credentials: true,
 }));
 
@@ -133,7 +133,12 @@ async function run() {
     });
 
     app.get('/cars', async (req, res) => {
-      const result = await collectionCars.find().toArray();
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      const result = await collectionCars.find()
+      .skip(page * size)
+      .limit(size)
+      .toArray();
       res.send(result);
     });
 
@@ -180,6 +185,36 @@ async function run() {
       res.send(result);
 
     })
+
+    // count the cars card for pagination
+
+    app.get('/productsCount', async(req, res) => {
+        const count = await collectionCars.estimatedDocumentCount()
+        res.send({count});
+
+    })
+
+    // search api for get search results
+
+  //   app.get('/cars/search', async (req, res) => {
+  //     const query = req.query.q;
+  
+  //     try {
+  //         const results = await collectionCars.find({
+  //             $or: [
+  //                 {
+  //                     name: { $regex: query}
+  //                 }
+  //             ]
+  //         }).toArray();
+  
+  //         res.send(results);
+  //     } catch (err) {
+  //         console.error('Error searching cars:', err);
+  //         res.status(500).send('Internal server error');
+  //     }
+  // });
+  
 
 
 
